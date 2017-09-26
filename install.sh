@@ -39,6 +39,7 @@ x86_64-fedora-26
 x86_64-debian-wheezy
 x86_64-debian-jessie
 x86_64-debian-stretch
+x86_64-debian-buster
 x86_64-ubuntu-trusty
 x86_64-ubuntu-xenial
 x86_64-ubuntu-yakkety
@@ -50,9 +51,12 @@ aarch64-ubuntu-xenial
 armv6l-raspbian-jessie
 armv7l-raspbian-jessie
 armv6l-raspbian-stretch
+armv6l-raspbian-buster
 armv7l-raspbian-stretch
+armv7l-raspbian-buster
 armv7l-debian-jessie
 armv7l-debian-stretch
+armv7l-debian-buster
 armv7l-ubuntu-trusty
 armv7l-ubuntu-xenial
 armv7l-ubuntu-yakkety
@@ -235,6 +239,9 @@ check_forked() {
 				lsb_dist=debian
 				dist_version="$(sed 's/\/.*//' /etc/debian_version | sed 's/\..*//')"
 				case "$dist_version" in
+					10)
+						dist_version="buster"
+					;;
 					9)
 						dist_version="stretch"
 					;;
@@ -356,6 +363,9 @@ do_install() {
 		debian|raspbian)
 			dist_version="$(sed 's/\/.*//' /etc/debian_version | sed 's/\..*//')"
 			case "$dist_version" in
+				10)
+					dist_version="buster"
+				;;
 				9)
 					dist_version="stretch"
 				;;
@@ -544,6 +554,9 @@ do_install() {
 			if ! command -v dirmngr > /dev/null; then
 				apt_get_update
 				( set -x; $sh_c 'sleep 3; apt-get install -y -q dirmngr' )
+			fi
+			if [ "$dist_version" = "buster" ]; then
+				dist_version="jessie"
 			fi
 			if [ "$dist_version" = "stretch" ]; then
 				dist_version="jessie"
